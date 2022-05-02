@@ -1,77 +1,76 @@
+from sys import argv
+
 import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-host_pop_A = 2000
-host_pop_a = 100
-dhAdt = 1.001
+# 1/3, 8/3, 4, 1
 
-parasite_pop_A = 1500
-parasite_pop_a = 200
-# dhadt = random.uniform(0.97, 1.01)
-dhadt = 1.01
+ALPHA = 1/3  # Coefficient of host growth
+BETA = 8/3  # Coefficient of predation
+DELTA = 4  # Coefficient of parasite growth
+GAMMA = 1  # Coefficient of death of parasites
 
-
-print(dhadt)
-
-# x=[0,1]
-# y=[host_pop_A, host_pop_A * dhAdt]
-y2=[parasite_pop_A, parasite_pop_A * dhadt]
-y=[]
-x=[]
-y2=[]
+dhdt = 0
+dpdt = 0
 
 
+def update_differentials(host_pop, parasite_pop):
+  global dhdt
+  global dpdt
 
-dhAdt_list = [dhAdt]
-dhadt_list = [dhadt]
-
-host_pop_A = host_pop_A * dhAdt
-parasite_pop_A = parasite_pop_A * dhadt
-
-
-# for i in range (125):
-#   x.append(i+2)
-#   if(dhadt_list[i] - dhadt_list[i-1] > 0):
-#     dhAdt = dhAdt * 0.99 * (1 + random.uniform(0,0))
-#   else:
-#     dhAdt = dhAdt * 1.001 * (1 + random.uniform(0,0))
-  
-#   host_pop_A = host_pop_A * dhAdt
-#   dhAdt_list.append(dhAdt)
-
-#   if host_pop_A < 100:
-#     host_pop_A += 50
-#     dhAdt += 0.5
-  
-
-#   if(dhAdt_list[i] - dhAdt_list [i-1] > 0.2 ):
-#     dhadt = dhadt * 1.03 *(1 + random.uniform(0,0))
-#   else:
-#     dhadt = dhadt * 0.99 *(1 + random.uniform(0,0))
-#   parasite_pop_A = parasite_pop_A * dhadt
-#   dhadt_list.append(dhadt)
-
-#   if parasite_pop_A < 1:
-#     parasite_pop_A += 100
-#     dhadt = 1.5
-
-#   y.append(host_pop_A)
-#   y2.append(parasite_pop_A)
-
-for i in range (125):
-  x.append(i)
-  y.append(np.sin(i/4) + 1)
-  y2.append(0.8*np.sin((i-6)/4)-0.3 + 1)
+  dhdt = ALPHA * host_pop - BETA * host_pop * parasite_pop
+  dpdt = DELTA * host_pop * parasite_pop - GAMMA * parasite_pop
 
 
-print(y)
-print(y2)
+host_pop = 0
+parasite_pop = 0
+
+generations = 0
+
+if(len(argv) < 4):
+  generations = 150
+else:
+  generations = int(argv[3])
+
+if(len(argv) < 3):
+  parasite_pop = 0.2
+else:
+  parasite_pop = float(argv[2])
+
+if(len(argv) < 2):
+  host_pop = 0.8
+else:
+  host_pop = float(argv[1])
+
+
+# 0.8, 0.2
+# host_pop = 0.3
+# parasite_pop = 0.4
+
+update_differentials(host_pop, parasite_pop)
+
+x = [0, 1]
+y = [host_pop, host_pop * dhdt]
+y2 = [parasite_pop, parasite_pop * dpdt]
+
+host_pop = max(0, min(1, host_pop + host_pop*dhdt))
+parasite_pop = max(0, min(1, parasite_pop + parasite_pop*dpdt))
+
+for i in range(generations):
+  x.append(i+2)
+  update_differentials(host_pop, parasite_pop)
+
+  host_pop = max(0, min(1, host_pop + host_pop*dhdt))
+  parasite_pop = max(0, min(1, parasite_pop + parasite_pop*dpdt))
+
+  y.append(host_pop)
+  y2.append(parasite_pop)
+  print(dhdt)
+
+
 fig, ax = plt.subplots()
 
 ax.plot(x, y, y2, linewidth=2.0)
 
 plt.show()
-
-
-
