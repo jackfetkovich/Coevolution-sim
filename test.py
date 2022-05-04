@@ -1,4 +1,7 @@
 from sys import argv
+from matplotlib import animation
+from matplotlib.animation import FuncAnimation
+
 
 import random
 import matplotlib.pyplot as plt
@@ -68,9 +71,30 @@ for i in range(generations):
   y2.append(parasite_pop)
   print(dhdt)
 
-
 fig, ax = plt.subplots()
+time = []
+hosts = []
+parasites=[]
 
-ax.plot(x, y, y2, linewidth=2.0)
+def animate(i):
+  if i <= len(x) -1:
+    time.append(x[i])
+    hosts.append(y[i])
+    parasites.append(y2[i])
+    ax.plot(time, hosts, color="red", label="% Host Population A Allele")
+    ax.plot(time, parasites, color="blue", label="% Parasite Population A Allele")
+
+
+plt.plot([], [], label="% Host Population A Allele", color="red", animated=True)
+plt.plot([], [], label="% Parasite Population A Allele", animated=True)
+leg = plt.legend(loc='upper right')
+plt.xlim([0, generations])
+plt.ylim([0,1])
+plt.title("Percent of Hosts and Parasite with Dominant Allele vs. Time", fontdict={'fontsize': 30})
+plt.xlabel("Generation")
+plt.ylabel("Percent of Hosts and Parasite with Dominant Allele")
+anim = FuncAnimation(fig, animate, interval=1)
+
+# ax.plot(x, y, y2, linewidth=2.0)
 
 plt.show()
