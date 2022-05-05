@@ -1,11 +1,7 @@
 from sys import argv
 from matplotlib import animation
 from matplotlib.animation import FuncAnimation
-
-
-import random
 import matplotlib.pyplot as plt
-import numpy as np
 
 # 1/3, 8/3, 4, 1
 
@@ -24,7 +20,6 @@ def update_differentials(host_pop, parasite_pop):
 
   dhdt = ALPHA * host_pop - BETA * host_pop * parasite_pop
   dpdt = DELTA * host_pop * parasite_pop - GAMMA * parasite_pop
-
 
 host_pop = 0
 parasite_pop = 0
@@ -45,11 +40,6 @@ if(len(argv) < 2):
   host_pop = 0.8
 else:
   host_pop = float(argv[1])
-
-
-# 0.8, 0.2
-# host_pop = 0.3
-# parasite_pop = 0.4
 
 update_differentials(host_pop, parasite_pop)
 
@@ -84,7 +74,6 @@ def animate(i):
     ax.plot(time, hosts, color="red", label="% Host Population A Allele")
     ax.plot(time, parasites, color="blue", label="% Parasite Population A Allele")
 
-
 plt.plot([], [], label="% Host Population A Allele", color="red", animated=True)
 plt.plot([], [], label="% Parasite Population A Allele", animated=True)
 leg = plt.legend(loc='upper right')
@@ -94,7 +83,5 @@ plt.title("Percent of Hosts and Parasite with Dominant Allele vs. Time", fontdic
 plt.xlabel("Generation")
 plt.ylabel("Percent of Hosts and Parasite with Dominant Allele")
 anim = FuncAnimation(fig, animate, interval=1)
-
-# ax.plot(x, y, y2, linewidth=2.0)
 
 plt.show()
